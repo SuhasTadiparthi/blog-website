@@ -1,0 +1,40 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+  <h2 class="mb-4">Change Log</h2>
+
+  <form method="get" class="mb-4">
+    <input type="text" name="q" class="form-control" placeholder="Search posts..." value="{{ request.GET.q }}">
+  </form>
+
+  {% for post in posts %}
+    <div class="card mb-3">
+      <div class="card-header d-flex justify-content-between">
+        <strong>{{ post.title }}</strong>
+        <small>{{ post.created|date:"M d Y, h:i" }}</small>
+      </div>
+      <div class="card-body">
+        <div>{{ post.content_html|safe }}</div>
+      </div>
+      <div class="card-footer d-flex justify-content-between">
+        
+        <small>
+          - {{ post.author.username }}
+          <br>
+          {% if post.category %} 
+            <em style="color:grey">{{ post.category.name }}</em>
+          {% endif %}
+        </small>
+        
+        {% if user == post.author %}
+          <div>
+            <a href="{% url 'edit_post' post.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+            <a href="{% url 'delete_post' post.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  {% empty %}
+    <p>No documentation posts yet.</p>
+  {% endfor %}
+{% endblock %}
